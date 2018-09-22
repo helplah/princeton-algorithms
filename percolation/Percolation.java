@@ -48,19 +48,19 @@ public class Percolation {
     }
 
     private void linkTop(int row, int col) {
+        // if first row link top
         if (row == 1) {
             ufArray.union(openedIndex, 0);
-        }
-        else if (isOpen(row - 1, col)) {
+        } else if (isOpen(row - 1, col)) {
             ufArray.union(openedIndex, openedIndex - size);
         }
     }
 
     private void linkBottom(int row, int col) {
+        // if last row link bottom
         if (row == size) {
             ufArray.union(openedIndex, size * size + 1);
-        }
-        else if (isOpen(row + 1, col)) {
+        } else if (isOpen(row + 1, col)) {
             ufArray.union(openedIndex, openedIndex + size);
         }
     }
@@ -86,8 +86,7 @@ public class Percolation {
 
             if (col == 1 && size > 1) {
                 linkRight(row, col);
-            }
-            else if (col == size && size > 1) {
+            } else if (col == size && size > 1) {
                 linkLeft(row, col);
             }
         }
@@ -99,10 +98,7 @@ public class Percolation {
         int colIndex = col - 1;
         validateIndices(rowIndex, colIndex);
 
-        if (grid[rowIndex][colIndex]) {
-            return true;
-        }
-        return false;
+        return grid[rowIndex][colIndex];
     }
 
     // is site (row, col) full?
@@ -113,10 +109,7 @@ public class Percolation {
 
         // should I use isOpen(row, col)?
         // top??
-        if (grid[rowIndex][colIndex] && ufArray.connected(openedIndex, ufArray.find(0))) {
-            return true;
-        }
-        return false;
+        return grid[rowIndex][colIndex] && ufArray.connected(openedIndex, ufArray.find(0));
     }
 
     // number of open sites
@@ -134,10 +127,7 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        if (ufArray.connected(0, size * size + 1)) {
-            return true;
-        }
-        return false;
+        return ufArray.connected(0, size * size + 1);
     }
 
     public static void main(String[] args) {
