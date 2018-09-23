@@ -24,7 +24,7 @@ public class Percolation {
     }
 
     private void xyTo1D(int row, int col) {
-
+        openedIndex = size * (row - 1) + col;
     }
 
     private void validateIndices(int row, int col) {
@@ -48,7 +48,7 @@ public class Percolation {
     }
 
     private void linkTop(int row, int col) {
-        // if first row link top
+        // if first row link top virtual site
         if (row == 1) {
             ufArray.union(openedIndex, 0);
         } else if (isOpen(row - 1, col)) {
@@ -57,7 +57,7 @@ public class Percolation {
     }
 
     private void linkBottom(int row, int col) {
-        // if last row link bottom
+        // if last row link bottom virtual site
         if (row == size) {
             ufArray.union(openedIndex, size * size + 1);
         } else if (isOpen(row + 1, col)) {
@@ -67,19 +67,19 @@ public class Percolation {
 
     // open site (row, col) if it is not open already
     public void open(int row, int col) {
-        openedIndex = size * (row - 1) + col;
+        xyTo1D(row, col);
 
         // validateIndices(rowIndex, colIndex);
         grid[row - 1][col - 1] = true;
 
         /* links openedIndex to its open neighbours
-            except for the four corners */
+            except for first and last row, first and last column */
         if (col != 1 && col != size && row != 1 && row != size) {
             linkRight(row, col);
             linkLeft(row, col);
             linkTop(row, col);
             linkBottom(row, col);
-        } // four corners
+        } // first and last column
         else if (col == 1 || col == size) {
             linkTop(row, col);
             linkBottom(row, col);
@@ -89,6 +89,12 @@ public class Percolation {
             } else if (col == size && size > 1) {
                 linkLeft(row, col);
             }
+        } // first and last row
+        else if (row == 1 || row == size) {
+            linkRight(row, col);
+            linkLeft(row, col);
+            linkTop(row, col);
+            linkBottom(row, col);
         }
     }
 
@@ -101,15 +107,23 @@ public class Percolation {
         return grid[rowIndex][colIndex];
     }
 
-    // is site (row, col) full?
+    // is site (row, col) open and connected to the virtual top site?
     public boolean isFull(int row, int col) {
+        xyTo1D(row, col);
+
         int rowIndex = row - 1;
         int colIndex = col - 1;
         validateIndices(rowIndex, colIndex);
 
-        // should I use isOpen(row, col)?
-        // top??
-        return grid[rowIndex][colIndex] && ufArray.connected(openedIndex, ufArray.find(0));
+        // input2-no: 4 is in no way connected to 0, I can't use the last openedIndex
+        // I need to use an array of first row sites and check if any of them is connected to 0
+        /* During drawing, when isFull method is called, the result of all the tiles will be affected
+            by openedIndex. openedIndex is overwritten during open method. If the last tile/input is not full,
+            all the other tiles will become white even if they're full. */
+        // I need to make sure (1,1) stays connected to 0
+        System.out.println(row + " " + col + " - isOpen: " + isOpen(row, col) +
+                ", connected: " + ufArray.connected(openedIndex, ufArray.find(0)));
+        return isOpen(row, col) && ufArray.connected(openedIndex, ufArray.find(0));
     }
 
     // number of open sites
@@ -125,7 +139,7 @@ public class Percolation {
         return counter;
     }
 
-    // does the system percolate?
+    // is the top virtual site connected to the bottom virtual site?
     public boolean percolates() {
         return ufArray.connected(0, size * size + 1);
     }
