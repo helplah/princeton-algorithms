@@ -8,4 +8,4 @@ This codebase will only cover Part I for the time being.
 
 | Assignment  | Name            |  Score   |   
 | :---        | :---            |  :---:   |   
-| Week 1      | [Percolation](http://coursera.cs.princeton.edu/algs4/assignments/percolation.html)     |  78/100  |
+| Week 1      | [Percolation](http://coursera.cs.princeton.edu/algs4/assignments/percolation.html)     |  93/100  |
