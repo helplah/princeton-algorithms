@@ -4,26 +4,32 @@
  *  Description:
  **************************************************************************** */
 
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class Deque<Item> implements Iterable<Item> {
     private int size;
-    private Node pointer;
+    private Node first;
+    private Node last;
 
     private class Node {
         Item item;
+        Node prev;
         Node next;
     }
 
     public Deque() {
-        pointer = null;
+        first = null;
+        last = null;
         size = 0;
         // assert check();
     }
 
     public boolean isEmpty() {
-        return pointer == null;
+        return first == null;
     }
 
     public int size() {
@@ -35,11 +41,21 @@ public class Deque<Item> implements Iterable<Item> {
             throw new IllegalArgumentException("Item added to front is null");
         }
 
-        Node oldFirst = pointer;
-        pointer = new Node();
-        pointer.item = item;
-        pointer.next = oldFirst;
+        Node oldFirst = first;
+        first = new Node();
+        first.item = item;
+        first.prev = null;
+        first.next = oldFirst;
         size++;
+
+        if (first.next != null) {
+            oldFirst.prev = first;
+        }
+
+        if (size == 2) {
+            // this equal last node
+            last = oldFirst;
+        }
         // assert check(); ????
     }
 
@@ -48,8 +64,22 @@ public class Deque<Item> implements Iterable<Item> {
             throw new IllegalArgumentException("Item added to end is null");
         }
 
-        pointer = new Node();
-        
+        Node oldLast = last;
+        last = new Node();
+        last.item = item;
+        last.prev = oldLast;
+        last.next = null;
+        size++;
+
+        if (last.prev != null) {
+            oldLast.next = last;
+        }
+
+        if (size == 2) {
+            // this equal last node
+            first = oldLast;
+        }
+        // assert check(); ????
     }
 
     public Item removeFirst() {
@@ -57,8 +87,8 @@ public class Deque<Item> implements Iterable<Item> {
             throw new NoSuchElementException("Deque is empty");
         }
 
-        Item item = pointer.item;
-        pointer = pointer.next;
+        Item item = first.item;
+        first = first.next;
         size--;
         // assert check(); ????
         return item;
@@ -69,13 +99,74 @@ public class Deque<Item> implements Iterable<Item> {
             throw new NoSuchElementException("Deque is empty");
         }
 
+        Item item = last.item;
+        last = last.prev;
+        size--;
+        // assert check(); ????
+        return item;
     }
 
     public Iterator<Item> iterator() {
+        return new ListIterator();
+    }
 
+    private class ListIterator implements Iterator<Item> {
+        private Node current = first;
+
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Item next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more items to return");
+            }
+
+            Item item = current.item;
+            current = current.next;
+            return item;
+        }
     }
 
     public static void main(String[] args) {
-        System.out.println("Works");
+        Deque<String> deque = new Deque<String>();
+
+        // test Deque methods
+        while (!StdIn.isEmpty()) {
+            String item = StdIn.readString();
+            if (item.equals("q")) {
+                break;
+            } else if (item.equals("-")) {
+                // problem
+                StdOut.print(deque.removeLast());
+            } else if (item.equals("+")) {
+                StdOut.print(deque.removeFirst());
+            } else if (item.contains("tail")) {
+                // problem
+                deque.addLast(item);
+            } else {
+                deque.addFirst(item);
+            }
+        }
+
+        // test iterator with long code
+        Iterator<String> iterator = deque.iterator();
+        while (iterator.hasNext()) {
+            String s = iterator.next();
+            StdOut.println(s);
+        }
+        System.out.println();
+
+        // test iterator with short code (forEach)
+        for (String s : deque) {
+            StdOut.println(s);
+        }
+        System.out.println();
+
+        System.out.println("Size of deque = " + deque.size());
     }
 }

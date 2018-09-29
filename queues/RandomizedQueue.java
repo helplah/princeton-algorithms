@@ -5,8 +5,10 @@
  **************************************************************************** */
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
+    private Item item;
 
     // construct an empty randomized queue
     public RandomizedQueue() {
@@ -30,17 +32,36 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // remove and return a random item
     public Item dequeue() {
-
+        return item;
     }
 
     // return a random item (but do not remove it)
     public Item sample() {
-
+        return item;
     }
 
     // return an independent iterator over items in random order
     public Iterator<Item> iterator() {
+        return new ListIterator();
+    }
 
+    private class ListIterator implements Iterator<Item> {
+
+
+        public boolean hasNext() {
+            return false;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Item next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more items to return");
+            }
+            return item;
+        }
     }
 
     // unit testing (optional)
