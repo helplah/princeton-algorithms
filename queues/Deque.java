@@ -29,7 +29,7 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     public boolean isEmpty() {
-        return first == null;
+        return size == 0;
     }
 
     public int size() {
@@ -48,11 +48,14 @@ public class Deque<Item> implements Iterable<Item> {
         first.next = oldFirst;
         size++;
 
+        // link next node to first node, if next node has data
         if (first.next != null) {
             oldFirst.prev = first;
         }
 
-        if (size == 2) {
+        if (isEmpty()) {
+            last = first;
+        } else if (size == 2) {
             // this equal last node
             last = oldFirst;
         }
@@ -71,11 +74,14 @@ public class Deque<Item> implements Iterable<Item> {
         last.next = null;
         size++;
 
+        // link prev node to last node, if prev node has data
         if (last.prev != null) {
             oldLast.next = last;
         }
 
-        if (size == 2) {
+        if (isEmpty()) {
+            first = last;
+        } else if (size == 2) {
             // this equal last node
             first = oldLast;
         }
