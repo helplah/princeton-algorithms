@@ -25,7 +25,6 @@ public class Deque<Item> implements Iterable<Item> {
         first = null;
         last = null;
         size = 0;
-        // assert check();
     }
 
     public boolean isEmpty() {
@@ -53,13 +52,12 @@ public class Deque<Item> implements Iterable<Item> {
             oldFirst.prev = first;
         }
 
-        if (isEmpty()) {
+        if (size == 1) {
             last = first;
         } else if (size == 2) {
             // this equal last node
             last = oldFirst;
         }
-        // assert check(); ????
     }
 
     public void addLast(Item item) {
@@ -79,13 +77,12 @@ public class Deque<Item> implements Iterable<Item> {
             oldLast.next = last;
         }
 
-        if (isEmpty()) {
+        if (size == 1) {
             first = last;
         } else if (size == 2) {
             // this equal last node
             first = oldLast;
         }
-        // assert check(); ????
     }
 
     public Item removeFirst() {
