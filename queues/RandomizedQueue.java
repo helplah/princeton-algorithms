@@ -38,9 +38,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     public Item dequeue() {
         noSuchElementException();
-        StdRandom.shuffle(queue);
-        Item item = queue[size - 1];
-        queue[size - 1] = null;
+        int randomIndex = StdRandom.uniform(size);
+        Item item = queue[randomIndex];
+        queue[randomIndex] = null;
         size--;
 
         if (size > 0 && size == queue.length / 4) {
@@ -59,7 +59,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         assert capacity >= size;
 
         Item[] temp = (Item[]) new Object[capacity];
-        for (int i = 0; i < capacity; i++) {
+        for (int i = 0; i < size; i++) {
             temp[i] = queue[i];
         }
         queue = temp;
@@ -102,6 +102,16 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     public static void main(String[] args) {
         RandomizedQueue<String> queue = new RandomizedQueue<String>();
-        
+        queue.enqueue("1");
+        queue.enqueue("2");
+        queue.enqueue("3");
+        queue.enqueue("4");
+        queue.enqueue("5");
+        int size = queue.size();
+        System.out.println("Empty: " + queue.isEmpty() + ", size: " + size);
+        for (int i = 0; i < size; i++) {
+            System.out.println(queue.dequeue());
+            System.out.println("Empty: " + queue.isEmpty() + ", size: " + queue.size());
+        }
     }
 }
