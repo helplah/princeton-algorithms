@@ -1,10 +1,9 @@
 /* *****************************************************************************
- *  Name:
+ *  Name: Deque.java
  *  Date:
- *  Description:
+ *  Description: Princeton Algorithms Stacks and Queues (Week 2)
  **************************************************************************** */
 
-import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Iterator;
@@ -31,6 +30,7 @@ public class Deque<Item> implements Iterable<Item> {
         return size == 0;
     }
 
+
     public int size() {
         return size;
     }
@@ -53,9 +53,10 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         if (size == 1) {
+            // if deque has 1 node, this is the first and last node
             last = first;
         } else if (size == 2) {
-            // this equal last node
+            // if deque has 2 nodes, next node is last node
             last = oldFirst;
         }
     }
@@ -78,9 +79,10 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         if (size == 1) {
+            // if deque has 1 node, this is the first and last node
             first = last;
         } else if (size == 2) {
-            // this equal last node
+            // if deque has 2 nodes, prev node is first node
             first = oldLast;
         }
     }
@@ -92,8 +94,8 @@ public class Deque<Item> implements Iterable<Item> {
 
         Item item = first.item;
         first = first.next;
+        first.prev = null;
         size--;
-        // assert check(); ????
         return item;
     }
 
@@ -104,8 +106,8 @@ public class Deque<Item> implements Iterable<Item> {
 
         Item item = last.item;
         last = last.prev;
+        last.next = null;
         size--;
-        // assert check(); ????
         return item;
     }
 
@@ -136,6 +138,7 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     public static void main(String[] args) {
+        /* test Deque implementation
         Deque<String> deque = new Deque<String>();
 
         // test Deque methods
@@ -171,5 +174,17 @@ public class Deque<Item> implements Iterable<Item> {
         System.out.println();
 
         System.out.println("Size of deque = " + deque.size());
+        */
+
+        Deque<Integer> deque = new Deque<>();
+        deque.addLast(1);
+        deque.addFirst(2);
+        deque.addFirst(3);
+        System.out.println("removed element: " + deque.removeLast());
+        System.out.println("size: " + deque.size());
+
+        for (int ele : deque) {
+            StdOut.println(ele);
+        }
     }
 }
