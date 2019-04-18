@@ -1,9 +1,10 @@
 /* *****************************************************************************
- *  Name:
+ *  Name: RandomizedQueue.java
  *  Date:
- *  Description:
+ *  Description:  Princeton Algorithms Stacks and Queues (Week 2)
  **************************************************************************** */
 
+import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.Iterator;
@@ -12,10 +13,14 @@ import java.util.NoSuchElementException;
 public class RandomizedQueue<Item> implements Iterable<Item> {
     private Item[] queue;
     private int size;
+    private boolean isShuffled = false;
+    private int index; // dequeue index
+    // [1, 2, 3, 4, null] - size = 4, array.length = 5
 
     public RandomizedQueue() {
         queue = (Item[]) new Object[2];
         size = 0;
+        index = 0;
     }
 
     public boolean isEmpty() {
@@ -29,7 +34,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public void enqueue(Item item) {
         if (item == null) {
             throw new IllegalArgumentException("Enqueue item cannot be null");
-        } else if (size == queue.length) {
+        } else if (size() == queue.length) {
             resize(2 * queue.length);
         }
 
@@ -38,10 +43,27 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     public Item dequeue() {
         noSuchElementException();
-        int randomIndex = StdRandom.uniform(size);
-        Item item = queue[randomIndex];
-        queue[randomIndex] = null;
+
+        if (!isShuffled) {
+            isShuffled = true;
+            StdRandom.shuffle(queue);
+        }
+
+        // how to ensure dequeue returns a random item, and doesn't repeat the same index?
+        // 1) shift null elements to the back, shuffle array then increment x
+        // 2) shuffle array then increment index 0...
+
+        // [9, 2, 1, 3, 5, 7, 8, 4, 6, 10] - shuffle 1...10 array to get this
+        // [null, 2, 1, 3, 5, 7, 8, 4, 6, 10] - dequeue 9; size = 9;
+
+        /* massage array - , after dequeue, move null behind and move the elements to the right of null forward
+         * if dequeue use the same index, else index++
+         * */
+
+        Item item = queue[index];
+        queue[index] = null;
         size--;
+        index++;
 
         if (size > 0 && size == queue.length / 4) {
             resize(queue.length / 2);
@@ -52,11 +74,16 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public Item sample() {
         noSuchElementException();
 
-        return queue[StdRandom.uniform(queue.length)];
+        if (!isShuffled) {
+            isShuffled = true;
+            StdRandom.shuffle(queue);
+        }
+
+        return queue[index];
     }
 
     private void resize(int capacity) {
-        assert capacity >= size;
+        //assert capacity >= size;
 
         Item[] temp = (Item[]) new Object[capacity];
         for (int i = 0; i < size; i++) {
@@ -76,15 +103,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     private class RandomIterator implements Iterator<Item> {
-        private int index;
-
-        public RandomIterator() {
-            index = size - 1;
-            StdRandom.shuffle(queue);
-        }
+        private int index = 0; // iterating index
+        private boolean firstTime = false;
 
         public boolean hasNext() {
-            return index >= 0;
+            return index < size() - 1;
         }
 
         public void remove() {
@@ -96,22 +119,44 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
                 throw new NoSuchElementException("No more items to return");
             }
 
-            return queue[index--];
+            if (!firstTime) {
+                firstTime = true;
+                return queue[index];
+            }
+
+            return queue[++index];
         }
     }
 
     public static void main(String[] args) {
-        RandomizedQueue<String> queue = new RandomizedQueue<String>();
-        queue.enqueue("1");
-        queue.enqueue("2");
-        queue.enqueue("3");
-        queue.enqueue("4");
-        queue.enqueue("5");
+        RandomizedQueue<Integer> queue = new RandomizedQueue<>();
+        queue.enqueue(0);
+        queue.enqueue(1);
+        queue.enqueue(2);
+        queue.enqueue(3);
+        queue.enqueue(4);
         int size = queue.size();
-        System.out.println("Empty: " + queue.isEmpty() + ", size: " + size);
+        // queue.sample()
+        System.out.println("Empty: " + queue.isEmpty() + ", size: " + size + ", sample: " + queue.sample());
+
+        /*
         for (int i = 0; i < size; i++) {
             System.out.println(queue.dequeue());
             System.out.println("Empty: " + queue.isEmpty() + ", size: " + queue.size());
+        }*/
+
+        //StdOut.println("remove: " + queue.dequeue());
+
+        for (Integer ele : queue) {
+            StdOut.println(ele);
         }
+
+
+
+        /*
+        int a[] = new int[10];
+        for (int x = 0; x < a.length; x++) {
+
+        } */
     }
 }
