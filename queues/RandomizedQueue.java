@@ -13,8 +13,8 @@ import java.util.NoSuchElementException;
 public class RandomizedQueue<Item> implements Iterable<Item> {
     private Item[] queue;
     private int size;
+    private int index; // dequeue n sample index
     private boolean isShuffled = false;
-    private int index; // dequeue index
     // [1, 2, 3, 4, null] - size = 4, array.length = 5
 
     public RandomizedQueue() {
@@ -34,7 +34,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public void enqueue(Item item) {
         if (item == null) {
             throw new IllegalArgumentException("Enqueue item cannot be null");
-        } else if (size() == queue.length) {
+        } else if (size == queue.length) {
             resize(2 * queue.length);
         }
 
@@ -43,12 +43,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     public Item dequeue() {
         noSuchElementException();
-
-        if (!isShuffled) {
-            isShuffled = true;
-            StdRandom.shuffle(queue);
-        }
-
         // how to ensure dequeue returns a random item, and doesn't repeat the same index?
         // 1) shift null elements to the back, shuffle array then increment x
         // 2) shuffle array then increment index 0...
@@ -56,10 +50,15 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         // [9, 2, 1, 3, 5, 7, 8, 4, 6, 10] - shuffle 1...10 array to get this
         // [null, 2, 1, 3, 5, 7, 8, 4, 6, 10] - dequeue 9; size = 9;
 
-        /* massage array - , after dequeue, move null behind and move the elements to the right of null forward
-         * if dequeue use the same index, else index++
-         * */
+        /*
+        int randomIndex = StdRandom.uniform(size);
+        Item item = queue[randomIndex];
 
+        while (item == null) {
+            item = queue[randomIndex];
+        } */
+
+        shuffle();
         Item item = queue[index];
         queue[index] = null;
         size--;
@@ -73,17 +72,25 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     public Item sample() {
         noSuchElementException();
+        /*
+        int randomIndex = StdRandom.uniform(size);
+        Item item = queue[randomIndex];
 
-        if (!isShuffled) {
-            isShuffled = true;
-            StdRandom.shuffle(queue);
-        }
+        while (item == null) {
+            item = queue[randomIndex];
+        }*/
 
         return queue[index];
     }
 
+    private void shuffle() {
+        if (!isShuffled) {
+            StdRandom.shuffle(queue);
+        }
+    }
+
     private void resize(int capacity) {
-        //assert capacity >= size;
+        // assert capacity >= size;
 
         Item[] temp = (Item[]) new Object[capacity];
         for (int i = 0; i < size; i++) {
@@ -103,11 +110,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     private class RandomIterator implements Iterator<Item> {
-        private int index = 0; // iterating index
+        private int index = 0;
         private boolean firstTime = false;
 
         public boolean hasNext() {
-            return index < size() - 1;
+            return index < size - 1;
         }
 
         public void remove() {
@@ -119,6 +126,15 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
                 throw new NoSuchElementException("No more items to return");
             }
 
+            /*
+            int randomIndex = StdRandom.uniform(size);
+            Item item = queue[randomIndex];
+
+            while (item == null) {
+                item = queue[randomIndex];
+            } */
+
+            shuffle();
             if (!firstTime) {
                 firstTime = true;
                 return queue[index];
@@ -138,20 +154,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         int size = queue.size();
         // queue.sample()
         System.out.println("Empty: " + queue.isEmpty() + ", size: " + size + ", sample: " + queue.sample());
-
-        /*
-        for (int i = 0; i < size; i++) {
-            System.out.println(queue.dequeue());
-            System.out.println("Empty: " + queue.isEmpty() + ", size: " + queue.size());
-        }*/
-
-        //StdOut.println("remove: " + queue.dequeue());
+        // StdOut.println("remove: " + queue.dequeue());
 
         for (Integer ele : queue) {
             StdOut.println(ele);
         }
-
-
 
         /*
         int a[] = new int[10];

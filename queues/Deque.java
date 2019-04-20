@@ -4,8 +4,6 @@
  *  Description: Princeton Algorithms Stacks and Queues (Week 2)
  **************************************************************************** */
 
-import edu.princeton.cs.algs4.StdOut;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -93,7 +91,13 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         Item item = first.item;
-        first = first.next;
+        // if deque has 1 node, set both prev and next node to null
+        if (size == 1) {
+            first.next = null;
+        } else {
+            first = first.next;
+        }
+
         first.prev = null;
         size--;
         return item;
@@ -105,7 +109,13 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         Item item = last.item;
-        last = last.prev;
+        // if deque has 1 node, set both prev and next node to null
+        if (size == 1) {
+            last.prev = null;
+        } else {
+            last = last.prev;
+        }
+
         last.next = null;
         size--;
         return item;
@@ -138,53 +148,15 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     public static void main(String[] args) {
-        /* test Deque implementation
-        Deque<String> deque = new Deque<String>();
-
-        // test Deque methods
-        while (!StdIn.isEmpty()) {
-            String item = StdIn.readString();
-            if (item.equals("q")) {
-                break;
-            } else if (item.equals("-")) {
-                // problem
-                StdOut.print(deque.removeLast());
-            } else if (item.equals("+")) {
-                StdOut.print(deque.removeFirst());
-            } else if (item.contains("tail")) {
-                // problem
-                deque.addLast(item);
-            } else {
-                deque.addFirst(item);
-            }
-        }
-
-        // test iterator with long code
-        Iterator<String> iterator = deque.iterator();
-        while (iterator.hasNext()) {
-            String s = iterator.next();
-            StdOut.println(s);
-        }
-        System.out.println();
-
-        // test iterator with short code (forEach)
-        for (String s : deque) {
-            StdOut.println(s);
-        }
-        System.out.println();
-
-        System.out.println("Size of deque = " + deque.size());
-        */
-
         Deque<Integer> deque = new Deque<>();
-        deque.addLast(1);
-        deque.addFirst(2);
-        deque.addFirst(3);
-        System.out.println("removed element: " + deque.removeLast());
+        deque.addFirst(1);
+        System.out.println("isEmpty: " + deque.isEmpty());
+        System.out.println("removed element: " + deque.removeFirst());
         System.out.println("size: " + deque.size());
 
+        /*
         for (int ele : deque) {
             StdOut.println(ele);
-        }
+        } */
     }
 }
