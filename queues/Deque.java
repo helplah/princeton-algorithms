@@ -4,6 +4,8 @@
  *  Description: Princeton Algorithms Stacks and Queues (Week 2)
  **************************************************************************** */
 
+import edu.princeton.cs.algs4.StdOut;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -28,7 +30,6 @@ public class Deque<Item> implements Iterable<Item> {
         return size == 0;
     }
 
-
     public int size() {
         return size;
     }
@@ -50,11 +51,11 @@ public class Deque<Item> implements Iterable<Item> {
             oldFirst.prev = first;
         }
 
+        // if deque has 1 node, this is the first and last node
         if (size == 1) {
-            // if deque has 1 node, this is the first and last node
             last = first;
-        } else if (size == 2) {
-            // if deque has 2 nodes, next node is last node
+        } // if deque has 2 nodes, next node is last node
+        else if (size == 2) {
             last = oldFirst;
         }
     }
@@ -76,11 +77,11 @@ public class Deque<Item> implements Iterable<Item> {
             oldLast.next = last;
         }
 
+        // if deque has 1 node, this is the first and last node
         if (size == 1) {
-            // if deque has 1 node, this is the first and last node
             first = last;
-        } else if (size == 2) {
-            // if deque has 2 nodes, prev node is first node
+        } // if deque has 2 nodes, prev node is first node
+        else if (size == 2) {
             first = oldLast;
         }
     }
@@ -91,14 +92,15 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         Item item = first.item;
-        // if deque has 1 node, set both prev and next node to null
+        // if deque has 1 node, set first and last to null
         if (size == 1) {
-            first.next = null;
+            first = null;
+            last = null;
         } else {
             first = first.next;
+            first.prev = null;
         }
 
-        first.prev = null;
         size--;
         return item;
     }
@@ -109,14 +111,15 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         Item item = last.item;
-        // if deque has 1 node, set both prev and next node to null
+        // if deque has 1 node, set first and last to null
         if (size == 1) {
-            last.prev = null;
+            first = null;
+            last = null;
         } else {
             last = last.prev;
+            last.next = null;
         }
 
-        last.next = null;
         size--;
         return item;
     }
@@ -149,14 +152,40 @@ public class Deque<Item> implements Iterable<Item> {
 
     public static void main(String[] args) {
         Deque<Integer> deque = new Deque<>();
-        deque.addFirst(1);
-        System.out.println("isEmpty: " + deque.isEmpty());
-        System.out.println("removed element: " + deque.removeFirst());
-        System.out.println("size: " + deque.size());
+        /*
+        int numOfItems = 10;
+        for (int x = 0; x < numOfItems; x++) {
+            deque.addFirst(x);
+        } */
+
+        /* Good
+        deque.addFirst(5);
+        deque.removeFirst(); */
+
+        /* Good
+        deque.addFirst(5);
+        deque.removeLast(); */
+
+        /* Good
+        deque.addLast(1);
+        deque.removeLast(); */
+
+        /* Good
+        deque.addLast(5);
+        deque.removeFirst(); */
 
         /*
+        for (int x = 0; x < numOfItems; x++) {
+            System.out.println("removed element: " + deque.removeFirst());
+        }*/
+
+        // System.out.println("isEmpty: " + deque.isEmpty());
+        // System.out.println("removed element: " + deque.removeFirst());
+        // System.out.println("removed element: " + deque.removeLast());
+        // System.out.println("size: " + deque.size());
+
         for (int ele : deque) {
-            StdOut.println(ele);
-        } */
+            StdOut.println("print: " + ele);
+        }
     }
 }
