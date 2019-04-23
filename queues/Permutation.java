@@ -10,13 +10,14 @@ import edu.princeton.cs.algs4.StdOut;
 public class Permutation {
     public static void main(String[] args) {
         int k = Integer.parseInt(args[0]);
-        // StdOut.println("prints k string: " + k);
+        // 1, 2, 4, 8, 16, 32...
         RandomizedQueue<String> queue = new RandomizedQueue<>();
+        int counter = 0;
 
-        while (!StdIn.isEmpty()) {
+        while (!StdIn.isEmpty() && counter < k) {
             String input = StdIn.readString();
             queue.enqueue(input);
-            // StdOut.println("input: " + input);
+            counter++;
         }
 
         // prints k of them, uniformly at random and each item from the sequence at most once

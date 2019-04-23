@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 public class RandomizedQueue<Item> implements Iterable<Item> {
     private Item[] queue;
     private int size = 0;
-    // [1, 2, 3, 4, null] - size = 4, array.length = 5
+    // [1, 2, null, null] - size = 2, array.length = 4
 
     public RandomizedQueue() {
         queue = (Item[]) new Object[2];
@@ -56,9 +56,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public Item sample() {
         noSuchElementException();
         int randomIndex = StdRandom.uniform(size);
-        Item item = queue[randomIndex];
 
-        return item;
+        return queue[randomIndex];
     }
 
     private void resize(int capacity) {
@@ -82,10 +81,22 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     private class RandomIterator implements Iterator<Item> {
-        private int counter = 0;
+        private int numOfItems = size;
+        private int[] nonNull;
+
+        // All elements must be returned only once, except for null values
+        private RandomIterator() {
+            // nonNull array is required to store and shuffle the index 0 to size of nonNull values in queue
+            nonNull = new int[numOfItems];
+            // doesn't matter whether pre or post increment is used in the third section of for loop, since update is last
+            for (int x = 0; x < numOfItems; x++) {
+                nonNull[x] = x; // if numOfItems = 10, 0...9
+            }
+            StdRandom.shuffle(nonNull);
+        }
 
         public boolean hasNext() {
-            return counter < size;
+            return numOfItems > 0;
         }
 
         public void remove() {
@@ -97,31 +108,29 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
                 throw new NoSuchElementException("No more items to return");
             }
 
-            int randomIndex = StdRandom.uniform(size);
-            Item item = queue[randomIndex];
-            counter++;
-
-            return item;
+            return queue[nonNull[--numOfItems]]; // if numOfItems = 10, 0...9
         }
     }
 
     public static void main(String[] args) {
-        /* Array.length grows from 1, 2, 4, 8, 16
-         *
-         * */
-
         RandomizedQueue<Integer> queue = new RandomizedQueue<>();
-        int numOfItems = 1000;
+        int numOfItems = 10;
         for (int x = 0; x < numOfItems; x++) {
             queue.enqueue(x);
         }
 
-        int size = queue.size();
-        // queue.sample()
-        StdOut.println("Empty: " + queue.isEmpty() + ", size: " + size + ", sample: " + queue.sample());
-        // StdOut.println("remove: " + queue.dequeue());
-        StdOut.println("Testing iterator below: ");
+        /*
+        queue.enqueue(10);
+        StdOut.println("remove: " + queue.dequeue());
+        StdOut.println("remove: " + queue.dequeue());
+        StdOut.println("remove: " + queue.dequeue());
+        StdOut.println("remove: " + queue.dequeue()); */
 
+        int size = queue.size();
+        // + queue.sample()
+        StdOut.println("Empty: " + queue.isEmpty() + ", size: " + size + ", sample: ");
+
+        StdOut.println("Testing iterator below: ");
         int numOfPrintedItems = 0;
         for (Integer ele : queue) {
             StdOut.println(ele);
