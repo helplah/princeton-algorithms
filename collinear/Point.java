@@ -13,9 +13,20 @@ import edu.princeton.cs.algs4.StdDraw;
 import java.util.Comparator;
 
 public class Point implements Comparable<Point> {
-    // public static final Comparator<Student>
+    public final Comparator<Point> BY_SLOPE = new BySlope();
     private final int x;     // x-coordinate of this point
     private final int y;     // y-coordinate of this point
+
+    private static class BySlope implements Comparator<Point> {
+        public int compare(Point first, Point second) {
+            if ((first.y - 0 / first.x) < (second.y - 0 / second.x)) {
+                return -1;
+            }
+            //slopeTo(that);
+
+            return 0;
+        }
+    }
 
     /**
      * Initializes a new point.
@@ -59,16 +70,15 @@ public class Point implements Comparable<Point> {
      * @param that the other point
      * @return the slope between this point and the specified point
      */
-    public double slopeTo(Point that) {
-        /* YOUR CODE HERE */
+    public double slopeTo(Point that) { // YOUR CODE HERE
         double slope = (that.y - this.y) / (that.x - this.x);
         // https://www.coursera.org/learn/algorithms-part1/programming/prXiW/collinear-points/discussions/threads/klTTwG6TEeeRiQpcwQKh-g
-        // horizontal line segment as positive zero - 0/number = 0
-        // vertical line segment as positive infinity - 10/0 = ???
-        // degenerate line segment (between a point and itself) as negative infinity - 0/negative number = ???
+        // horizontal line segment as positive zero - 0/(x differences) = 0
+        // vertical line segment as positive infinity - (y differences)/0 = ???
+        // degenerate line segment if (x0, y0) and (x1, y1) are equal as negative infinity - 0/0 = ???
         if (slope > 0) return Double.POSITIVE_INFINITY;
         else if (slope < 0) return Double.NEGATIVE_INFINITY;
-        else return 0;
+        else return +0;
     }
 
     /**
@@ -83,8 +93,7 @@ public class Point implements Comparable<Point> {
      * point; and a positive integer if this point is greater than the
      * argument point
      */
-    public int compareTo(Point that) {
-        /* YOUR CODE HERE */
+    public int compareTo(Point that) { // YOUR CODE HERE
         if (this.y < that.y || this.y == that.y && this.x < that.x) {
             return -1;
         } else if (this.y > that.y || this.y == that.y && this.x > that.x) {
@@ -94,16 +103,14 @@ public class Point implements Comparable<Point> {
         }
     }
 
-
     /**
      * Compares two points by the slope they make with this point.
      * The slope is defined as in the slopeTo() method.
      *
      * @return the Comparator that defines this ordering on points
      */
-    public Comparator<Point> slopeOrder() {
-        /* YOUR CODE HERE */
-
+    public Comparator<Point> slopeOrder() { // YOUR CODE HERE
+        return new BySlope();
     }
 
     /**
@@ -121,7 +128,28 @@ public class Point implements Comparable<Point> {
     /**
      * Unit tests the Point data type.
      */
-    public static void main(String[] args) {
-        /* YOUR CODE HERE */
+    public static void main(String[] args) { // YOUR CODE HERE
+        Point x = new Point(0, 0);
+        Point y = new Point(2, 2);
+
+        x.draw();
+        y.draw();
+        x.drawTo(y);
+
+        /*
+        In in = new In(args[0]);
+        int n = in.readInt();
+        ArrayList<Point> points = new ArrayList<Point>();
+        for (int i = 0; i < n; i++) {
+            int x = in.readInt();
+            int y = in.readInt();
+            Point p = new Point(x, y);
+            points.add(p);
+        }
+
+        Collections.sort(points);
+        for (Point a : points)
+            System.out.println(a.toString());
+        */
     }
 }
