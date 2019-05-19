@@ -17,14 +17,18 @@ public class Point implements Comparable<Point> {
     private final int x;     // x-coordinate of this point
     private final int y;     // y-coordinate of this point
 
+    // in this class, I'm left with slopeOrder and BySlope
     private static class BySlope implements Comparator<Point> {
         public int compare(Point first, Point second) {
-            if ((first.y - 0 / first.x) < (second.y - 0 / second.x)) {
-                return -1;
-            }
-            //slopeTo(that);
+            int firstSlope = first.y / first.x, secondSlope = second.y / second.x;
 
-            return 0;
+            if (firstSlope < secondSlope) {
+                return -1;
+            } else if (firstSlope > secondSlope) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
     }
 
@@ -71,14 +75,24 @@ public class Point implements Comparable<Point> {
      * @return the slope between this point and the specified point
      */
     public double slopeTo(Point that) { // YOUR CODE HERE
-        double slope = (that.y - this.y) / (that.x - this.x);
         // https://www.coursera.org/learn/algorithms-part1/programming/prXiW/collinear-points/discussions/threads/klTTwG6TEeeRiQpcwQKh-g
-        // horizontal line segment as positive zero - 0/(x differences) = 0
-        // vertical line segment as positive infinity - (y differences)/0 = ???
-        // degenerate line segment if (x0, y0) and (x1, y1) are equal as negative infinity - 0/0 = ???
-        if (slope > 0) return Double.POSITIVE_INFINITY;
-        else if (slope < 0) return Double.NEGATIVE_INFINITY;
-        else return +0;
+        // horizontal line segment: 0/(x differences which isn't zero) = 0 -> return 0
+        // vertical line segment: (y differences which isn't zero)/0 = [ArithmeticException: division by zero] -> return Double.POSITIVE_INFINITY
+        // degenerate line segment: 0/0 = [ArithmeticException: division by zero] since (x0, y0) and (x1, y1) are equal -> return Double.NEGATIVE_INFINITY
+        double slope, yDifferences = that.y - this.y, xDifferences = that.x - this.x;
+        try {
+            slope = yDifferences / xDifferences;
+        } catch (ArithmeticException e) {
+            System.out.println("Exception caught: Division by zero which means ");
+            if (yDifferences == 0) {
+                return Double.NEGATIVE_INFINITY;
+            } else {
+                return Double.POSITIVE_INFINITY;
+            }
+        }
+
+        System.out.println("slope: " + slope);
+        return slope;
     }
 
     /**
@@ -129,12 +143,14 @@ public class Point implements Comparable<Point> {
      * Unit tests the Point data type.
      */
     public static void main(String[] args) { // YOUR CODE HERE
-        Point x = new Point(0, 0);
-        Point y = new Point(2, 2);
+        Point x = new Point(2, 2);
+        Point y = new Point(2, 5);
 
         x.draw();
         y.draw();
         x.drawTo(y);
+        System.out.println(x.compareTo(y));
+        System.out.println(x.slopeTo(y));
 
         /*
         In in = new In(args[0]);
